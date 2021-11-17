@@ -6,7 +6,7 @@
 /*   By: lduboulo <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 22:57:33 by lduboulo          #+#    #+#             */
-/*   Updated: 2021/11/12 23:50:58 by lduboulo         ###   ########.fr       */
+/*   Updated: 2021/11/17 18:06:28 by lduboulo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ size_t	ft_strlen(const char *str)
 	return (i);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin(char **s1, char const *s2)
 {
 	char	*res;
 	int		i1;
@@ -42,34 +42,35 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	ires = 0;
 	if (s2 == NULL)
 		return (NULL);
-	res = malloc((ft_strlen(s1) + (ft_strlen(s2) + 1)) * sizeof(char));
+	res = malloc((ft_strlen(*s1) + (ft_strlen(s2) + 1)) * sizeof(char));
 	if (! res)
 		return (NULL);
-	ft_bzero(res, ((ft_strlen(s1) + ft_strlen(s2) + 1) * sizeof(char)));
+	ft_bzero(res, ((ft_strlen(*s1) + ft_strlen(s2) + 1) * sizeof(char)));
 	i1 = 0;
-	while (s1[i1] != '\0')
-		res[ires++] = s1[i1++];
+	while ((*s1)[i1] != '\0')
+		res[ires++] = (*s1)[i1++];
 	i2 = 0;
 	while (s2[i2] != '\0')
 		res[ires++] = s2[i2++];
 	res[ires] = '\0';
+	free(*s1);
 	return (res);
 }
 
-char	*ft_strdup(const char *s1)
+char	*ft_strdup(char **s1, int istr)
 {
 	char	*copy;
 	int		icopy;
-	int		istr;
 
 	icopy = 0;
-	istr = 0;
-	copy = malloc((ft_strlen(s1) + 1) * sizeof(char));
+	copy = malloc((ft_strlen(*s1) + 1) * sizeof(char));
 	if (! copy)
 		return (NULL);
-	while (s1[istr] != '\0')
-		copy[icopy++] = s1[istr++];
+	ft_bzero(copy, (ft_strlen(*s1) + 1) * sizeof(char));
+	while ((*s1)[istr] != '\0')
+		copy[icopy++] = (*s1)[istr++];
 	copy[icopy] = '\0';
+	free(*s1);
 	return (copy);
 }
 
@@ -82,7 +83,7 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	if (s == NULL)
 		return (NULL);
 	if (start > ft_strlen(s))
-		return (ft_strdup(""));
+		return (NULL);
 	if ((ft_strlen(s) - start) < len)
 		substr = malloc((ft_strlen(s) - start + 1) * sizeof(char));
 	else
